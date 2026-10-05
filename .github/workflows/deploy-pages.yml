@@ -1,6 +1,6 @@
 # Deploy static build to GitHub Pages (project site).
-# Repo: https://github.com/namdayneee/Portfolio
-# Site: https://namdayneee.github.io/Portfolio/
+# Repo: https://github.com/nguyendnam/Portfolio
+# Site: https://nguyendnam.github.io/Portfolio/
 #
 # One-time setup on GitHub:
 #   Settings → Pages → Build and deployment → Source → GitHub Actions

@@ -1,4 +1,4 @@
-# Dinh Nam Nguyen — Portfolio
+# Nguyen Dinh Nam — Portfolio
 
 Personal portfolio for **Nguyễn Đình Nam**, a Computer Science student at Ho Chi Minh City University of Technology (HCMUT), expected to graduate in April 2027.
 
@@ -37,7 +37,7 @@ npm run build
 
 Pushes to `main` are built and deployed through `.github/workflows/deploy-pages.yml`.
 
-Live site: <https://namdayneee.github.io/Portfolio/>
+Live site: <https://nguyendnam.github.io/Portfolio/>
 
 ## Content notes
 
