@@ -1,8 +1,10 @@
+import { useModalFocus } from "../hooks/useModalFocus";
 import { AnimatePresence, motion } from "motion/react";
 import { Download, ExternalLink, FileText, X } from "lucide-react";
 
 export default function ResumeModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
-  const resumeUrl = "Nam_Nguyen_Dinh_CV.pdf";
+  useModalFocus(isOpen, onClose);
+  const resumeUrl = `${import.meta.env.BASE_URL}Nam_Nguyen_Dinh_CV.pdf`;
 
   return (
     <AnimatePresence>

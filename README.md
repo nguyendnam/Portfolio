@@ -1,44 +1,44 @@
 # Nguyen Dinh Nam — Portfolio
 
-Personal portfolio for **Nguyễn Đình Nam**, a Computer Science student at Ho Chi Minh City University of Technology (HCMUT), expected to graduate in April 2027.
+Personal portfolio for Nguyễn Đình Nam, an HCMUT student focused on frontend development with React, Next.js and TypeScript.
 
-## What this portfolio emphasizes
+**Website:** https://namnguyen.id.vn/
 
-- Evidence-based project descriptions instead of invented metrics.
-- Real experience from an eight-week frontend internship at EyeCode.
-- Case studies for OPLang Compiler Lite, HCMUT LostFound, and Matavi.
-- A printable resume view with accurate education and GPA information.
-- Responsive layout, keyboard-visible focus states, reduced-motion support, and semantic metadata.
+**GitHub:** https://github.com/nguyendnam
 
-## Stack
+## Portfolio content
 
-- React 19 + TypeScript
-- Vite
-- Tailwind CSS 4
-- Motion
-- Lucide icons
-- GitHub Pages + GitHub Actions
+- A focused introduction, internship experience, education and technical toolkit.
+- Three featured projects: Jev Caro, AI Tech Radar and OPLang Compiler Lite.
+- Nine case studies with category filters, implementation details and delivery status.
+- Direct source/demo links, CV preview and email contact.
+- Keyboard-accessible project actions and dialogs, responsive layout and reduced-motion CSS.
 
-## Run locally
+Project research and verification boundaries are documented in [docs/project-evidence.md](docs/project-evidence.md). A local implementation, deployed demo, running automation and work in progress are labeled separately.
 
-```bash
-npm install
+## Development
+
+Node.js 22 and npm:
+
+```sh
+npm ci
 npm run dev
-```
-
-Quality checks:
-
-```bash
 npm run lint
 npm run build
+npm run preview
 ```
+
+`lint` runs the TypeScript checker. Production output is written to `dist/`.
+
+## Editing content
+
+- `src/data.ts`: profile, project descriptions, delivery notes, skills and experience.
+- `src/types.ts`: project metadata shape.
+- `src/App.tsx`: page layout and project filters; set `featured: true` to show a project initially.
+- `src/components/ProjectModal.tsx`: full project details.
+- `public/Nam_Nguyen_Dinh_CV.pdf`: downloadable CV, maintained separately from web copy.
+- `index.html`: search and social metadata.
 
 ## Deployment
 
-Pushes to `main` are built and deployed through `.github/workflows/deploy-pages.yml`.
-
-Live site: <https://nguyendnam.github.io/Portfolio/>
-
-## Content notes
-
-Project and profile content lives in `src/data.ts`. Update that file when graduation status, contact details, or project status changes.
+The existing GitHub Actions workflow builds and deploys pushes to `main` to GitHub Pages. The Vite base is `/` for the existing custom domain, `namnguyen.id.vn`. If moving to project Pages without a custom domain, change the Vite base and canonical URL accordingly. Open a pull request to review changes before merging into the deployment branch.

@@ -29,6 +29,8 @@ const navigation = [
   { id: "skills", label: "Skills" },
 ];
 
+const projectFilters = ["Featured", "All", "Web apps", "Developer tools", "Mobile"] as const;
+
 const mascotAssetPath = `${import.meta.env.BASE_URL}mascots/`;
 
 export default function App() {
@@ -36,6 +38,8 @@ export default function App() {
   const [resumeOpen, setResumeOpen] = useState(false);
   const [contactOpen, setContactOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [projectFilter, setProjectFilter] = useState<(typeof projectFilters)[number]>("Featured");
+  const visibleProjects = PROJECTS.filter((project) => projectFilter === "All" || (projectFilter === "Featured" ? project.featured : project.category === projectFilter));
   const [activeSection, setActiveSection] = useState("about");
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
@@ -63,6 +67,7 @@ export default function App() {
       <div className="grid-bg pointer-events-none fixed inset-0 opacity-70" />
       <div className="pointer-events-none fixed left-1/2 top-[-16rem] h-[32rem] w-[48rem] -translate-x-1/2 rounded-full bg-cyan-300/[.07] blur-[120px]" />
 
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:left-5 focus:top-4 focus:z-[100] focus:bg-cyan-200 focus:p-3 focus:text-black">Skip to content</a>
       <header className="fixed inset-x-0 top-0 z-50 border-b border-white/[.07] bg-[#09090b]/85 backdrop-blur-xl">
         <div className="mx-auto flex h-[72px] max-w-7xl items-center justify-between px-5 sm:px-8">
           <button onClick={() => scrollTo("about")} className="text-xl font-black tracking-tight text-white" aria-label="Back to top">
@@ -103,17 +108,18 @@ export default function App() {
         </AnimatePresence>
       </header>
 
-      <main className="relative z-10 pt-[73px]">
+      <main id="main-content" className="relative z-10 pt-[73px]">
         <section id="about" className="mx-auto grid min-h-[calc(100vh-72px)] max-w-7xl items-center gap-14 px-5 py-20 sm:px-8 lg:grid-cols-[1.4fr_.6fr]">
           <div>
             <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="mb-8 inline-flex items-center gap-2 rounded-full border border-emerald-300/20 bg-emerald-300/[.06] px-3 py-1.5 font-mono text-xs text-emerald-200">
               <Sparkles className="h-3.5 w-3.5" /> Open to internship and fresher opportunities
             </motion.div>
+            <p className="mb-4 font-mono text-sm text-zinc-300">Nguyen Dinh Nam / Frontend Developer</p>
             <motion.h1 initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .08 }} className="max-w-4xl text-5xl font-black leading-[.98] tracking-[-.045em] text-white sm:text-6xl lg:text-8xl">
-              I turn coursework into <span className="text-cyan-300">working software.</span>
+              Thoughtful interfaces.<br /><span className="text-cyan-300">Useful software.</span>
             </motion.h1>
             <motion.p initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .16 }} className="mt-7 max-w-2xl text-base leading-8 text-zinc-400 sm:text-lg">
-              I'm {PROFILE.vietnameseName}, a Computer Science student at HCMUT building practical web, mobile and developer tools. I care about clear system design, reliable APIs and interfaces that help people finish real tasks.
+              I'm {PROFILE.vietnameseName}, a software engineering student at HCMUT. I build React and TypeScript interfaces, connect them to practical services, and turn ideas into tools I can use, test and improve.
             </motion.p>
             <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .24 }} className="mt-9 flex flex-wrap gap-3">
               <button onClick={() => scrollTo("projects")} className="flex items-center gap-2 rounded-lg bg-cyan-200 px-6 py-3.5 font-mono text-xs font-bold text-cyan-950 transition hover:bg-cyan-300">
@@ -123,6 +129,7 @@ export default function App() {
                 <Github className="h-4 w-4" /> GitHub profile
               </a>
             </motion.div>
+            <div className="mt-10 flex flex-wrap gap-x-6 gap-y-3 border-t border-white/10 pt-5 font-mono text-xs text-zinc-400"><span>React / Next.js / TypeScript</span><span>Frontend internship · EyeCode</span></div>
           </div>
 
           <motion.aside initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: .22 }} className="rounded-3xl border border-white/10 bg-white/[.035] p-6 shadow-2xl shadow-black/30 backdrop-blur">
@@ -145,7 +152,7 @@ export default function App() {
             <p className="font-mono text-[10px] uppercase tracking-[.22em] text-cyan-300">Candidate snapshot</p>
             <div className="mt-6 space-y-5">
               <Snapshot icon={<GraduationCap />} label="Education" value="B.S. Computer Science · HCMUT" note={`${PROFILE.graduation} · GPA ${PROFILE.gpa}`} />
-              <Snapshot icon={<Code2 />} label="Focus" value="Full-stack & product engineering" note="Web · Mobile · Developer tools" />
+              <Snapshot icon={<Code2 />} label="Focus" value="Frontend development" note="React · TypeScript · API integration" />
               <Snapshot icon={<MapPin />} label="Based in" value={PROFILE.location} note="Available for on-site / hybrid roles" />
             </div>
           </motion.aside>
@@ -153,22 +160,30 @@ export default function App() {
 
         <section id="projects" className="border-y border-white/[.07] bg-black/20 px-5 py-24 sm:px-8">
           <div className="mx-auto max-w-7xl">
-            <SectionHeading kicker="Selected work" title="Projects with a real problem behind them" description="No placeholder products or invented metrics. These case studies reflect work I have designed, built, tested, or am actively developing." />
-            <div className="mt-12 grid gap-5 lg:grid-cols-3">
-              {PROJECTS.map((project, index) => (
-                <motion.article key={project.id} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-80px" }} transition={{ delay: index * .07 }} onClick={() => setSelectedProject(project)} className="group flex min-h-[420px] cursor-pointer flex-col rounded-2xl border border-white/10 bg-[#111114] p-7 transition hover:-translate-y-1 hover:border-cyan-300/40">
+            <SectionHeading kicker="Selected work" title="Selected projects" description="Web experiences, developer tools and personal automation. Explore the problem, implementation and delivery behind each project." />
+            <div className="mt-8 flex flex-wrap gap-2" role="group" aria-label="Filter projects">
+              {projectFilters.map((filter) => <button key={filter} aria-pressed={projectFilter === filter} onClick={() => setProjectFilter(filter)} className={`rounded-lg border px-4 py-2.5 font-mono text-xs transition ${projectFilter === filter ? "border-cyan-200 bg-cyan-200 text-cyan-950" : "border-white/10 text-zinc-400 hover:border-cyan-300/50 hover:text-white"}`}>{filter}</button>)}
+            </div>
+            <p className="mt-4 text-xs text-zinc-500" role="status">{visibleProjects.length} projects · {projectFilter === "Featured" ? "Start here, then explore all projects" : projectFilter}</p>
+            <div className="mt-6 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+              {visibleProjects.map((project, index) => (
+                <motion.article key={project.id} initial={false} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-80px" }} transition={{ delay: Math.min(index, 2) * .07 }} className="group flex min-h-[420px] flex-col rounded-2xl border border-white/10 bg-[#111114] p-7 transition hover:-translate-y-1 hover:border-cyan-300/40">
                   <div className="flex items-start justify-between gap-4">
                     <p className="font-mono text-[10px] uppercase tracking-[.18em] text-cyan-300">{project.eyebrow}</p>
                     <ArrowUpRight className="h-5 w-5 text-zinc-600 transition group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-cyan-300" />
                   </div>
-                  <h3 className="mt-7 text-2xl font-bold tracking-tight text-white">{project.title}</h3>
+                  <p className={`mt-6 w-fit rounded-full border px-2.5 py-1 font-mono text-[10px] ${project.status === "In development" ? "border-amber-300/25 text-amber-200" : project.live || project.id === "radar" ? "border-emerald-300/25 text-emerald-200" : "border-white/15 text-zinc-400"}`}>{project.status}</p>
+                  <h3 className="mt-4 text-2xl font-bold tracking-tight text-white">{project.title}</h3>
                   <p className="mt-4 text-sm leading-7 text-zinc-400">{project.description}</p>
-                  <div className="mt-6 flex flex-wrap gap-2">
+                  <div className="mb-7 mt-6 flex flex-wrap gap-2">
                     {project.tags.slice(0, 5).map((tag) => <span key={tag} className="rounded border border-white/10 bg-white/[.035] px-2.5 py-1 font-mono text-[10px] text-zinc-300">{tag}</span>)}
                   </div>
                   <div className="mt-auto border-t border-white/[.07] pt-6">
-                    <div className="flex items-center gap-2 text-xs text-zinc-300"><CheckCircle2 className="h-4 w-4 text-emerald-300" /> {project.status}</div>
-                    <button className="mt-5 font-mono text-xs font-bold text-cyan-300">View case study →</button>
+                    <button onClick={() => setSelectedProject(project)} aria-label={`View ${project.title} case study`} className="font-mono text-xs font-bold text-cyan-300">View case study →</button>
+                    <div className="mt-5 flex flex-wrap items-center gap-5 font-mono text-xs">
+                      {project.github && <a href={project.github} target="_blank" rel="noreferrer" aria-label={`${project.title} source code`} className="inline-flex items-center gap-1.5 text-zinc-400 hover:text-white"><Github className="h-3.5 w-3.5" /> Source</a>}
+                      {project.live && <a href={project.live} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 text-emerald-200 hover:text-white">{project.liveLabel || "View project"}<ArrowUpRight className="h-3.5 w-3.5" /></a>}
+                    </div>
                   </div>
                 </motion.article>
               ))}
@@ -177,7 +192,7 @@ export default function App() {
         </section>
 
         <section id="experience" className="mx-auto max-w-5xl px-5 py-24 sm:px-8">
-          <SectionHeading kicker="Experience & education" title="Learning by shipping" description="A concise timeline focused on work I can explain, demonstrate, and improve." />
+          <SectionHeading kicker="Experience & education" title="Learning by shipping" description="Industry experience at EyeCode, backed by a computer science foundation at HCMUT." />
           <div className="mt-14 border-l border-white/10 pl-7 sm:pl-10">
             {EXPERIENCE_ITEMS.map((item, index) => (
               <article key={item.id} className="relative pb-14 last:pb-0">
@@ -197,7 +212,7 @@ export default function App() {
 
         <section id="skills" className="border-y border-white/[.07] bg-black/20 px-5 py-24 sm:px-8">
           <div className="mx-auto max-w-7xl">
-            <SectionHeading kicker="Technical foundation" title="Tools I have used in real coursework and projects" description="I prefer an honest skills map over progress bars or arbitrary proficiency percentages." />
+            <SectionHeading kicker="Technical foundation" title="A practical engineering toolkit" description="My core focus is React, Next.js and TypeScript, supported by backend, database and delivery experience." />
             <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {SKILL_CATEGORIES.map((category) => (
                 <div key={category.title} className="rounded-2xl border border-white/10 bg-white/[.03] p-6">
@@ -212,8 +227,8 @@ export default function App() {
         <section className="mx-auto max-w-7xl px-5 py-24 text-center sm:px-8">
           <div className="rounded-3xl border border-cyan-300/20 bg-gradient-to-br from-cyan-300/[.08] via-transparent to-violet-300/[.06] px-6 py-20">
             <BookOpen className="mx-auto h-8 w-8 text-cyan-300" />
-            <h2 className="mx-auto mt-6 max-w-2xl text-3xl font-black tracking-tight text-white sm:text-5xl">Looking for a junior developer who learns in public and ships?</h2>
-            <p className="mx-auto mt-5 max-w-xl text-sm leading-7 text-zinc-400">I'm preparing for graduation in April 2027 and looking for opportunities to contribute, receive strong engineering feedback, and grow with a product team.</p>
+            <h2 className="mx-auto mt-6 max-w-2xl text-3xl font-black tracking-tight text-white sm:text-5xl">Let’s build something useful.</h2>
+            <p className="mx-auto mt-5 max-w-xl text-sm leading-7 text-zinc-400">I'm looking for frontend internship and fresher opportunities where I can contribute to a product, collaborate with an engineering team and keep improving. Expected graduation: April 2027.</p>
             <button onClick={() => setContactOpen(true)} className="mt-8 inline-flex items-center gap-2 rounded-lg bg-cyan-200 px-7 py-4 font-mono text-xs font-bold text-cyan-950 hover:bg-cyan-300"><Mail className="h-4 w-4" /> Start a conversation</button>
           </div>
         </section>

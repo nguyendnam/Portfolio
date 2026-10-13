@@ -1,8 +1,10 @@
+import { useModalFocus } from "../hooks/useModalFocus";
 import { AnimatePresence, motion } from "motion/react";
 import { Github, Mail, MapPin, X } from "lucide-react";
 import { PROFILE } from "../data";
 
 export default function ContactFormModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+  useModalFocus(isOpen, onClose);
   return (
     <AnimatePresence>
       {isOpen && (
